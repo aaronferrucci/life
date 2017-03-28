@@ -1,8 +1,5 @@
-// Size of cells
+// Size of cells (in pixels)
 int cellSize = 10;
-
-// How likely for a cell to be alive at start (in percentage)
-float probabilityOfAliveAtStart = 15;
 
 // Variables for timer
 int interval = 100;
@@ -12,72 +9,55 @@ int lastRecordedTime = 0;
 color alive = color(0, 200, 0);
 color dead = color(0);
 
-// Array of cells
-// TODO starting array is a literal, formatted intuitively
-// copy it into 'cells' (transposing en passant)
-// it'll still be a headache to make sure the start array 
-// dimensions match width and height.
-int[][] cells = {
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 1, 1, 0, 0, 0, 0, 0, 0, 0},
-  {0, 1, 1, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 1, 1, 0, 0, 0, 0, 0, 0, 0},
-  {0, 1, 1, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
-  {0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+// Starting state
+int[][] start = {
+  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+  {0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+  {0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+  {0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+  {0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+  {0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, },
+  {0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, },
+  {0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
 };
-// Buffer to record the state of the cells and use this while changing the others in the interations
+
+int[][] cells; 
 int[][] cellsBuffer; 
 
 // Pause
 boolean pause = false;
 
+void init() {
+  for (int x=0; x<width/cellSize; x++) {
+    for (int y=0; y<height/cellSize; y++) {
+      cells[x][y] = start[y][x];
+    }
+  }
+}
+
 void setup() {
   size (200, 100);
 
   // Instantiate arrays
-  // cells = new int[width/cellSize][height/cellSize];
+  cells = new int[width/cellSize][height/cellSize];
   cellsBuffer = new int[width/cellSize][height/cellSize];
 
   // This stroke will draw the background grid
   stroke(48);
-
   noSmooth();
-/*
+
   // Initialization of cells
-  for (int x=0; x<width/cellSize; x++) {
-    for (int y=0; y<height/cellSize; y++) {
-      float state = random (100);
-      if (state > probabilityOfAliveAtStart) { 
-        state = 0;
-      }
-      else {
-        state = 1;
-      }
-      cells[x][y] = int(state); // Save state of each cell
-    }
-  }
-*/
+  init();
+
   background(0); // Fill in black in case cells don't cover all the windows
 }
 
 
 void draw() {
 
-  //Draw grid
+  // Draw grid
   for (int x=0; x<width/cellSize; x++) {
     for (int y=0; y<height/cellSize; y++) {
         if (cells[x][y]==1) {
@@ -97,7 +77,7 @@ void draw() {
     }
   }
 
-  // Create  new cells manually on pause
+  // Create new cells manually on pause
   if (pause && mousePressed) {
     // Map and avoid out of bound errors
     int xCellOver = int(map(mouseX, 0, width, 0, width/cellSize));
@@ -124,8 +104,6 @@ void draw() {
     }
   }
 }
-
-
 
 void iteration() { // When the clock ticks
   int xdim = width / cellSize;
@@ -168,21 +146,9 @@ void iteration() { // When the clock ticks
 
 void keyPressed() {
   if (key=='r' || key == 'R') {
-    // Restart: reinitialization of cells
-    for (int x=0; x<width/cellSize; x++) {
-      for (int y=0; y<height/cellSize; y++) {
-        float state = random (100);
-        if (state > probabilityOfAliveAtStart) {
-          state = 0;
-        }
-        else {
-          state = 1;
-        }
-        cells[x][y] = int(state); // Save state of each cell
-      }
-    }
+    init();
   }
-  if (key==' ') { // On/off of pause
+  if (key==' ') { // toggle pause
     pause = !pause;
   }
   if (key=='c' || key == 'C') { // Clear all

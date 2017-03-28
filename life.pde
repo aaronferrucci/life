@@ -13,6 +13,10 @@ color alive = color(0, 200, 0);
 color dead = color(0);
 
 // Array of cells
+// TODO starting array is a literal, formatted intuitively
+// copy it into 'cells' (transposing en passant)
+// it'll still be a headache to make sure the start array 
+// dimensions match width and height.
 int[][] cells = {
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
   {0, 1, 1, 0, 0, 0, 0, 0, 0, 0},
@@ -189,3 +193,4 @@ void keyPressed() {
     }
   }
 }
+
